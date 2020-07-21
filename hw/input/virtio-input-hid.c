@@ -33,6 +33,17 @@ static const unsigned short keymap_button[INPUT_BUTTON__MAX] = {
     [INPUT_BUTTON_EXTRA]             = BTN_EXTRA,
 };
 
+static const unsigned short keymap_button_tablet[INPUT_BUTTON__MAX] = {
+    [INPUT_BUTTON_LEFT]              = BTN_TOUCH,
+    [INPUT_BUTTON_RIGHT]             = BTN_TOUCH,
+    [INPUT_BUTTON_MIDDLE]            = BTN_MIDDLE,
+    [INPUT_BUTTON_WHEEL_UP]          = BTN_GEAR_UP,
+    [INPUT_BUTTON_WHEEL_DOWN]        = BTN_GEAR_DOWN,
+    [INPUT_BUTTON_SIDE]              = BTN_SIDE,
+    [INPUT_BUTTON_EXTRA]             = BTN_EXTRA,
+};
+
+
 static const unsigned short axismap_rel[INPUT_AXIS__MAX] = {
     [INPUT_AXIS_X]                   = REL_X,
     [INPUT_AXIS_Y]                   = REL_Y,
@@ -110,9 +121,9 @@ static void virtio_input_handle_event(DeviceState *dev, QemuConsole *src,
             event.value = cpu_to_le32(btn->button == INPUT_BUTTON_WHEEL_UP
                                       ? 1 : -1);
             virtio_input_send(vinput, &event);
-        } else if (keymap_button[btn->button]) {
+        } else if (keymap_button_tablet[btn->button]) {
             event.type  = cpu_to_le16(EV_KEY);
-            event.code  = cpu_to_le16(keymap_button[btn->button]);
+            event.code  = cpu_to_le16(keymap_button_tablet[btn->button]);
             event.value = cpu_to_le32(btn->down ? 1 : 0);
             virtio_input_send(vinput, &event);
         } else {
@@ -498,8 +509,8 @@ static void virtio_tablet_init(Object *obj)
     virtio_input_init_config(vinput, vhid->wheel_axis
                              ? virtio_tablet_config_v2
                              : virtio_tablet_config_v1);
-    virtio_input_key_config(vinput, keymap_button,
-                            ARRAY_SIZE(keymap_button));
+    virtio_input_key_config(vinput, keymap_button_tablet,
+                            ARRAY_SIZE(keymap_button_tablet));
 }
 
 static const TypeInfo virtio_tablet_info = {

@@ -1887,8 +1887,6 @@ QemuConsole *graphic_console_init(DeviceState *dev, uint32_t head,
                                   const GraphicHwOps *hw_ops,
                                   void *opaque)
 {
-    static const char noinit[] =
-        "Guest has not initialized the display (yet).";
     int width = 1920;
     int height = 1080;
     QemuConsole *s;
@@ -1915,7 +1913,7 @@ QemuConsole *graphic_console_init(DeviceState *dev, uint32_t head,
                                  &error_abort);
     }
 
-    surface = qemu_create_message_surface(width, height, noinit);
+    surface = qemu_create_displaysurface(width, height);
     dpy_gfx_replace_surface(s, surface);
     return s;
 }
